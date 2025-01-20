@@ -1,0 +1,19 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "pnpm install",
+            "detail": "install dependencies from package",
+            "type": "shell",
+            "windows": {
+                "command": "if (!(pnpm list)) { pnpm install }"
+            },
+            "linux": {
+                "command": "if [ -z \"$(pnpm list 2>/dev/null)\" ]; then pnpm install; fi"
+            },
+            "presentation": {
+                "close": true
+            }
+        }
+    ]
+}
