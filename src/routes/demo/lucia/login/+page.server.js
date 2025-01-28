@@ -20,9 +20,7 @@ export const actions = {
 		const password = formData.get('password');
 
 		if (!validateUsername(username)) {
-			return fail(400, {
-				message: 'Invalid username (min 3, max 31 characters, alphanumeric only)'
-			});
+			return fail(400, { message: 'Invalid username (min 3, max 31 characters, alphanumeric only)' });
 		}
 		if (!validatePassword(password)) {
 			return fail(400, { message: 'Invalid password (min 6, max 255 characters)' });
@@ -79,7 +77,7 @@ export const actions = {
 			const session = await auth.createSession(sessionToken, userId);
 			auth.setSessionTokenCookie(event, sessionToken, session.expiresAt);
 		} catch (e) {
-			return fail(500, { message: 'An error has occurred' });
+			return fail(500, { message: 'An error has occurred: ' + e.message });
 		}
 		return redirect(302, '/demo/lucia');
 	}
