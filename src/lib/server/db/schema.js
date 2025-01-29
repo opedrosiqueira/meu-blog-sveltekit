@@ -1,14 +1,14 @@
 import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
 
 export const user = sqliteTable('user', {
-	id: integer('id').primaryKey({ autoIncrement: true }),
-	username: text('username').notNull().unique(),
-	passwordHash: text('password_hash').notNull()
+	id: integer().primaryKey({ autoIncrement: true }),
+	username: text().notNull().unique(),
+	passwordHash: text().notNull()
 });
 
 export const session = sqliteTable('session', {
-	id: text('id').primaryKey(),
-	userId: integer('user_id')
+	id: text().primaryKey(),
+	userId: integer()
 		.notNull()
 		.references(() => user.id),
 	expiresAt: integer('expires_at', { mode: 'timestamp' }).notNull()

@@ -11,7 +11,8 @@
 		"lint": "prettier --check . && eslint .",
 		"db:push": "drizzle-kit push",
 		"db:migrate": "drizzle-kit migrate",
-		"db:studio": "drizzle-kit studio"
+		"db:studio": "drizzle-kit studio",
+		"seed": "node src/lib/server/db/seed.js"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^1.2.5",
