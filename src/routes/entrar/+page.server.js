@@ -1,5 +1,4 @@
 import { hash, verify } from '@node-rs/argon2';
-import { encodeBase32LowerCase } from '@oslojs/encoding';
 import { fail, redirect } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 import * as auth from '$lib/server/auth';
@@ -61,7 +60,6 @@ export const actions = {
 			return fail(400, { message: 'Invalid password' });
 		}
 
-		const userId = generateUserId();
 		const passwordHash = await hash(password, {
 			// recommended minimum parameters
 			memoryCost: 19456,
@@ -71,10 +69,9 @@ export const actions = {
 		});
 
 		try {
-			const result = await db.insert(table.user).values({ id: userId, username, passwordHash });
-			console.log("retirar essa linha depois, apenas testes", result);
+			const result = await db.insert(table.user).values({ username, passwordHash }).returning({ id: table.user.id });
 			const sessionToken = auth.generateSessionToken();
-			const session = await auth.createSession(sessionToken, userId);
+			const session = await auth.createSession(sessionToken, result[0].id);
 			auth.setSessionTokenCookie(event, sessionToken, session.expiresAt);
 		} catch (e) {
 			return fail(500, { message: 'An error has occurred: ' + e.message });
@@ -82,13 +79,6 @@ export const actions = {
 		return redirect(302, '/entrar');
 	}
 };
-
-function generateUserId() {
-	// ID with 120 bits of entropy, or about the same as UUID v4.
-	const bytes = crypto.getRandomValues(new Uint8Array(15));
-	const id = encodeBase32LowerCase(bytes);
-	return id;
-}
 
 function validateUsername(username) {
 	return (
