@@ -8,7 +8,7 @@ import * as table from '$lib/server/db/schema';
 
 export const load = async (event) => {
 	if (event.locals.user) {
-		return redirect(302, '/demo/lucia');
+		return redirect(302, '/');
 	}
 	return {};
 };
@@ -47,7 +47,7 @@ export const actions = {
 		const session = await auth.createSession(sessionToken, existingUser.id);
 		auth.setSessionTokenCookie(event, sessionToken, session.expiresAt);
 
-		return redirect(302, '/demo/lucia');
+		return redirect(302, '/entrar');
 	},
 	register: async (event) => {
 		const formData = await event.request.formData();
@@ -79,7 +79,7 @@ export const actions = {
 		} catch (e) {
 			return fail(500, { message: 'An error has occurred: ' + e.message });
 		}
-		return redirect(302, '/demo/lucia');
+		return redirect(302, '/entrar');
 	}
 };
 

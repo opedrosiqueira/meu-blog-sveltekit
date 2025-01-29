@@ -44,4 +44,4 @@ pnpm run db:push
 
 Selecione "Yes".
 
-Tudo pronto! Pode executar o site com `pnpm run dev` e acessar a página http://localhost:5173/demo/lucia/ de exemplo!.
+Tudo pronto! Pode executar o site com `pnpm run dev` e acessar a página http://localhost:5173/ de exemplo!
