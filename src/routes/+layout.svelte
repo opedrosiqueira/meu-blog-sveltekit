@@ -39,7 +39,7 @@
 					</button>
 					<ul class="dropdown-menu dropdown-menu-end">
 						{#if data.user}
-							<li><a class="dropdown-item" href="/usuario">{data.user.username}</a></li>
+							<li><a class="dropdown-item" href="/meuperfil">{data.user.username}</a></li>
 							<li><hr class="dropdown-divider" /></li>
 							<li>
 								<form method="post" action="/sair">
