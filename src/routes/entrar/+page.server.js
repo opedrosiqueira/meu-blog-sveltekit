@@ -71,8 +71,8 @@ export const actions = {
 		});
 
 		try {
-			await db.insert(table.user).values({ id: userId, username, passwordHash });
-
+			const result = await db.insert(table.user).values({ id: userId, username, passwordHash });
+			console.log("retirar essa linha depois, apenas testes", result);
 			const sessionToken = auth.generateSessionToken();
 			const session = await auth.createSession(sessionToken, userId);
 			auth.setSessionTokenCookie(event, sessionToken, session.expiresAt);
