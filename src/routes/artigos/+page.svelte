@@ -19,6 +19,10 @@
 	}
 </script>
 
+<svelte:head>
+	<link rel="stylesheet" href="/style.css" />
+</svelte:head>
+
 <h1>Todos os artigos</h1>
 
 <input class="form-control mb-3" type="text" bind:value={termo} oninput={pesquisar} placeholder="Pesquisar artigos" />

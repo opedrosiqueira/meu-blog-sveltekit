@@ -2,8 +2,6 @@
 	import { marked } from 'marked';
 
 	let { data } = $props();
-
-	console.log(data);
 </script>
 
 <h1>{data.artigo.titulo}</h1>
