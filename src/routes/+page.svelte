@@ -1,2 +1,39 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to read the documentation</p>
+<script>
+	let { data, form } = $props();
+
+	let termo = $state('');
+	let filtrados = $state(data.artigos.slice());
+
+	function pesquisar() {
+		if (termo.trim() === '') {
+			filtrados = data.artigos.slice();
+			return;
+		} else {
+			filtrados = [];
+			for (const artigo of data.artigos) {
+				if (artigo.titulo.toLowerCase().includes(termo.toLowerCase())) {
+					filtrados.push(artigo);
+				}
+			}
+		}
+	}
+</script>
+
+<h1>Todos os artigos</h1>
+
+<input class="form-control mb-3" type="text" bind:value={termo} oninput={pesquisar} placeholder="Pesquisar artigos" />
+{#if filtrados.length === 0}
+	<p>Nenhum artigo encontrado.</p>
+{:else}
+	<div class="list-group">
+		{#each filtrados as artigo}
+			<a href="/artigos/{artigo.id}" class="list-group-item list-group-item-action">
+				<div class="d-flex w-100 justify-content-between">
+					<h5 class="mb-1">{artigo.titulo}</h5>
+					<small class="text-body-secondary">{artigo.atualizadoEm}</small>
+				</div>
+				<p class="mb-1">{artigo.subtitulo}</p>
+			</a>
+		{/each}
+	</div>
+{/if}
