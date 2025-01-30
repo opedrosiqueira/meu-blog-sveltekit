@@ -3,6 +3,9 @@
 
 	let { data } = $props();
 </script>
+<svelte:head>
+	<title>{data.artigo.titulo}</title>
+</svelte:head>
 
 <h1>{data.artigo.titulo}</h1>
 {#if data.artigo.autorId == data.user.id}

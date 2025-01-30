@@ -19,9 +19,16 @@
 	}
 </script>
 
+<!-- opção 1 para importar aquivo css -->
 <svelte:head>
+	<title>Meu Blog</title>
 	<link rel="stylesheet" href="/style.css" />
 </svelte:head>
+
+<!-- opção 2 para importar aquivo css -->
+<!-- <style>
+	@import '/style.css';
+</style> -->
 
 <h1>Todos os artigos</h1>
 
