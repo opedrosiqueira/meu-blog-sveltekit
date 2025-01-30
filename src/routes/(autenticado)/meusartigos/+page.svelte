@@ -26,7 +26,7 @@
 {#if data.artigos.length === 0}
 	<p>Você ainda não escreveu nenhum artigo.</p>
 {:else}
-	<input type="text" bind:value={termo} oninput={pesquisar} placeholder="Pesquisar artigos" />
+	<input class="form-control mb-3" type="text" bind:value={termo} oninput={pesquisar} placeholder="Pesquisar artigos" />
 	{#if filtrados.length === 0}
 		<p>Nenhum artigo encontrado.</p>
 	{:else}
@@ -37,7 +37,7 @@
 						<h5 class="mb-1">{artigo.titulo}</h5>
 						<small class="text-body-secondary">{artigo.atualizadoEm}</small>
 					</div>
-					<p class="mb-1">{artigo.conteudo}</p>
+					<p class="mb-1">{artigo.subtitulo}</p>
 				</a>
 			{/each}
 		</div>

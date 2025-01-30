@@ -22,6 +22,6 @@ export const artigo = sqliteTable('artigo', {
 	subtitulo: text().notNull(),
 	conteudo: text().notNull(),
 	autorId: integer().notNull().references(() => user.id),
-	atualizadoEm: text().notNull().default(sql`(CURRENT_DATE)`),
-	criadoEm: text().notNull().default(sql`(CURRENT_DATE)`)
+	atualizadoEm: text().notNull().default(sql`(CURRENT_TIMESTAMP)`),
+	criadoEm: text().notNull().default(sql`(CURRENT_TIMESTAMP)`)
 });
