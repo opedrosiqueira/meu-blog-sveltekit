@@ -2,12 +2,12 @@
 	let { children, data } = $props();
 </script>
 
-<div class="container-fluid">
+<div class="d-flex flex-column min-vh-100 container-fluid">
 	<header class="navbar navbar-expand-lg bg-body-tertiary">
 		<button class="navbar-toggler d-lg-none" data-bs-toggle="offcanvas" data-bs-target="#mySideBar" aria-label="toggleSidebar">
 			<i class="bi bi-list"></i>
 		</button>
-		<a class="navbar-brand" href="/">Meu site</a>
+		<a class="navbar-brand" href="/">Meu Blog</a>
 		<button class="navbar-toggler" data-bs-toggle="offcanvas" data-bs-target="#navbarText" aria-label="toggleNavbar">
 			<i class="bi bi-three-dots-vertical"></i>
 		</button>
@@ -22,7 +22,7 @@
 						<a class="nav-link active" href="/">Home</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link active" href="#">Features</a>
+						<a class="nav-link active" href="/teste">Teste</a>
 					</li>
 					<li class="nav-item">
 						<a class="nav-link active" href="/secreta">Somente usuários</a>
@@ -74,7 +74,7 @@
 		{@render children()}
 	</main>
 
-	<footer class="d-flex justify-content-between align-items-center pt-3 mt-4 border-top">
+	<footer class="d-flex justify-content-between align-items-center py-1 mt-auto border-top">
 		<p class="mb-0 text-body-secondary">&copy; 2024 Company, Inc</p>
 
 		<a href="/"> <img src="/favicon.png" alt="logo" style="height: 2em" /> </a>
