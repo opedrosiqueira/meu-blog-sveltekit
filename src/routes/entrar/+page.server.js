@@ -9,7 +9,7 @@ export const load = async (event) => {
 	if (event.locals.user) {
 		return redirect(302, '/');
 	}
-	return {};
+	return { redirectTo: event.request.headers.get('referer') || '/' };
 };
 
 export const actions = {
@@ -17,6 +17,7 @@ export const actions = {
 		const formData = await event.request.formData();
 		const username = formData.get('username');
 		const password = formData.get('password');
+		const redirectTo = formData.get('redirectTo') || '/';
 
 		if (!validateUsername(username)) {
 			return fail(400, { message: 'Invalid username (min 3, max 31 characters, alphanumeric only)' });
@@ -46,7 +47,7 @@ export const actions = {
 		const session = await auth.createSession(sessionToken, existingUser.id);
 		auth.setSessionTokenCookie(event, sessionToken, session.expiresAt);
 
-		return redirect(302, '/entrar');
+		return redirect(302, redirectTo);
 	},
 	register: async (event) => {
 		const formData = await event.request.formData();

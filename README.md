@@ -45,3 +45,9 @@ pnpm run db:push
 Selecione "Yes".
 
 Tudo pronto! Pode executar o site com `pnpm run dev` e acessar a página http://localhost:5173/ de exemplo!
+
+## TODO-List
+
+Fotos de perfil
+
+em vez de mostrar a data, mostrar um período de tempo desde a data inicial, e.g., há x dias.

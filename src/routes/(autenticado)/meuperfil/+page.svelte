@@ -5,7 +5,7 @@
 <div class="mx-auto card my-3" style="max-width: 540px;">
 	<div class="row g-0">
 		<div class="col-md-4 text-center">
-			<img src="/favicon.png" class="img-fluid rounded-start" alt="foto do usuário" />
+			<img src="https://github.com/twbs.png" class="img-fluid rounded-start" alt="foto do usuário" />
 		</div>
 		<div class="col-md-8">
 			<div class="card-body">

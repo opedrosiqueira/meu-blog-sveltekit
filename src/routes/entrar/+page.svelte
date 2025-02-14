@@ -1,11 +1,10 @@
 <script>
-	import { enhance } from '$app/forms';
-
-	let { form } = $props();
+	let { data, form } = $props();
 </script>
 
 <h1>Entrar/Cadastrar</h1>
-<form method="post" action="?/login" use:enhance>
+<form method="post" action="?/login">
+	<input type="hidden" name="redirectTo" value={data.redirectTo} />
 	<label>
 		Usuário
 		<input name="username" />

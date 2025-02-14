@@ -32,7 +32,7 @@
 				<div class="dropdown">
 					<button class="btn d-block dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
 						{#if data.user}
-							<img src="/favicon.png" alt="foto do usuário" width="32" height="32" class="rounded-circle" />
+							<img src="https://github.com/twbs.png" alt="foto do usuário" width="32" height="32" class="rounded-circle" />
 						{:else}
 							Entrar
 						{/if}
