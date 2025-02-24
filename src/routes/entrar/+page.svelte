@@ -13,7 +13,7 @@
 		Senha
 		<input type="password" name="password" />
 	</label>
-	<button>Entrar</button>
-	<button formaction="?/register">Cadastrar</button>
+	<button class="btn btn-primary">Entrar</button>
+	<button class="btn btn-primary" formaction="?/register">Cadastrar</button>
 </form>
 <p style="color: red">{form?.message ?? ''}</p>

@@ -1,3 +1,4 @@
+import { hash, verify } from '@node-rs/argon2';
 import { eq } from 'drizzle-orm';
 import { sha256 } from '@oslojs/crypto/sha2';
 import { encodeBase64url, encodeHexLowerCase } from '@oslojs/encoding';
@@ -19,22 +20,23 @@ export function generateSessionToken() {
 }
 
 /**
- * Create a new session with a user ID, a token and a expiration date. The token is hashed with SHA-256. The session is stored in the database and returned.
+ * Create a new session with a user ID, a token and a expiration date. The token is then hashed with SHA-256, the session is stored in the database and returned.
  * @param {string} token 
  * @param {number} userId 
  * @returns {Promise<Session>}
  */
-export async function createSession(token, userId) {
-	const byteToken = new TextEncoder().encode(token); // Convert token to bytes
-	const sha256Token = sha256(byteToken); // SHA-256 hash of the token
-	const sessionId = encodeHexLowerCase(sha256Token); // Hexadecimal representation of the hash
+export async function createSession(userId, cookies) {
+	const token = generateSessionToken();
 
-	const session = {
-		id: sessionId,
-		userId,
-		expiresAt: new Date(Date.now() + DAY_IN_MS)
-	};
+	const byteToken = new TextEncoder().encode(token); // Convert token to bytes
+	const sha256Token = sha256(byteToken); // SHA-256 hash of the token (a byte array)
+	const sessionId = encodeHexLowerCase(sha256Token); // Hexadecimal representation of the hash (a string)
+
+	const session = { id: sessionId, userId, expiresAt: new Date(Date.now() + DAY_IN_MS) };
 	await db.insert(table.session).values(session);
+
+	if (cookies) { setSessionTokenCookie(cookies, token, session.expiresAt); }
+
 	return session;
 }
 
@@ -48,7 +50,7 @@ export async function createSession(token, userId) {
  * @param {string} token hexadecimal representation of the SHA-256 hash of the session token
  * @returns {Promise<{session: Session|null, user: User|null}>} If the session is not found, both session and user will be null.
  */
-export async function validateSessionToken(token) {
+export async function validateSessionToken(token, cookies) {
 	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
 	const [result] = await db
 		.select({
@@ -77,6 +79,12 @@ export async function validateSessionToken(token) {
 			.where(eq(table.session.id, session.id));
 	}
 
+	if (cookies) { // we recommend setting a new session cookie after validation to persist the cookie for an extended time.
+		setSessionTokenCookie(cookies, token, session.expiresAt);
+	} else { // if session is not valid, then both session and user are null, and I can delete the cookie
+		deleteSessionTokenCookie(cookies);
+	}
+
 	return { session, user };
 }
 
@@ -84,8 +92,10 @@ export async function validateSessionToken(token) {
  * Invalidate a session by deleting it from the database.
  * @param {string} sessionId
  */
-export async function invalidateSession(sessionId) {
+export async function invalidateSession(sessionId, cookies) {
 	await db.delete(table.session).where(eq(table.session.id, sessionId));
+
+	if (cookies) { deleteSessionTokenCookie(cookies); }
 }
 
 /**
@@ -94,8 +104,8 @@ export async function invalidateSession(sessionId) {
  * @param {string} token
  * @param {Date} expiresAt
  */
-export function setSessionTokenCookie(event, token, expiresAt) {
-	event.cookies.set(sessionCookieName, token, {
+export function setSessionTokenCookie(cookies, token, expiresAt) {
+	cookies.set(sessionCookieName, token, {
 		expires: expiresAt,
 		path: '/'
 	});
@@ -105,6 +115,46 @@ export function setSessionTokenCookie(event, token, expiresAt) {
  * Delete the session token cookie.
  * @param {import("@sveltejs/kit").RequestEvent} event
  */
-export function deleteSessionTokenCookie(event) {
-	event.cookies.delete(sessionCookieName, { path: '/' });
+export function deleteSessionTokenCookie(cookies) {
+	cookies.delete(sessionCookieName, { path: '/' });
+}
+
+function validateUsername(username) {
+	return (
+		typeof username === 'string' &&
+		username.length >= 3 &&
+		username.length <= 31 &&
+		/^[a-z0-9_-]+$/.test(username)
+	);
+}
+
+function validatePassword(password) {
+	return typeof password === 'string' && password.length >= 4 && password.length <= 255;
+}
+
+export async function authenticateUser(username, password) {
+	if (!validateUsername(username)) { throw new Error('Invalid username'); }
+	if (!validatePassword(password)) { throw new Error('Invalid password'); }
+
+	const existingUser = (await db.select().from(table.user).where(eq(table.user.username, username))).at(0);
+	if (!existingUser) { throw new Error('Incorrect username or password'); }
+
+	const validPassword = await verify(existingUser.passwordHash, password, {
+		memoryCost: 19456, timeCost: 2, outputLen: 32, parallelism: 1
+	});
+	if (!validPassword) { throw new Error('Incorrect username or password'); }
+
+	return existingUser;
+}
+
+export async function registerUser(username, password) {
+	if (!validateUsername(username)) { throw new Error('Invalid username'); }
+	if (!validatePassword(password)) { throw new Error('Invalid password'); }
+
+	const passwordHash = await hash(password, {// recommended minimum parameters
+		memoryCost: 19456, timeCost: 2, outputLen: 32, parallelism: 1
+	});
+
+	const newUser = (await db.insert(table.user).values({ username, passwordHash })).at(0);
+	return newUser;
 }
