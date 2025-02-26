@@ -1,25 +1,25 @@
 import { drizzle } from 'drizzle-orm/libsql';
 import { createClient } from '@libsql/client';
 import { eq } from 'drizzle-orm';
-import * as table from './schema.js';
+import * as tabela from './schema.js';
 
-const client = createClient({ url: "file:local.db" });
-export const db = drizzle(client);
+const cliente = createClient({ url: "file:local.db" });
+export const db = drizzle(cliente);
 
-async function seed() {
-    console.log('Seeding database...');
+async function popularBanco() {
+    console.log('Populando o banco de dados...');
 
-    await db.delete(table.user).where(eq(table.user.username, 'testuser'));
+    await db.delete(tabela.usuario).where(eq(tabela.usuario.nome, 'usuarioTeste'));
 
-    await db.insert(table.user).values([
-        { username: 'testuser', passwordHash: 'hashedpassword' }
+    await db.insert(tabela.usuario).values([
+        { nome: 'usuarioTeste', hashSenha: 'senhaHash' }
     ]);
 
-    console.log('Database seeded successfully.');
+    console.log('Banco de dados populado com sucesso.');
     process.exit(0);
 }
 
-seed().catch((err) => {
-    console.error('Error seeding database:', err);
+popularBanco().catch((erro) => {
+    console.error('Erro ao popular o banco de dados:', erro);
     process.exit(1);
 });

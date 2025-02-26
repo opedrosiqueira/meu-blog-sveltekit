@@ -1,20 +1,19 @@
 import { sql } from 'drizzle-orm';
 import { sqliteTable, text, integer, check } from 'drizzle-orm/sqlite-core';
 
-
-export const user = sqliteTable('user', {
+export const usuario = sqliteTable('usuario', {
 	id: integer().primaryKey({ autoIncrement: true }),
-	username: text().notNull().unique(),
-	image: text(),
-	passwordHash: text().notNull()
+	nome: text().notNull().unique(),
+	imagem: text(),
+	hashSenha: text().notNull()
 });
 
-export const session = sqliteTable('session', {
+export const sessao = sqliteTable('sessao', {
 	id: text().primaryKey(),
-	userId: integer()
+	usuarioId: integer()
 		.notNull()
-		.references(() => user.id),
-	expiresAt: integer('expiresAt', { mode: 'timestamp' }).notNull()
+		.references(() => usuario.id),
+	expiraEm: integer('expiraEm', { mode: 'timestamp' }).notNull()
 });
 
 export const artigo = sqliteTable('artigo', {
@@ -22,7 +21,7 @@ export const artigo = sqliteTable('artigo', {
 	titulo: text().notNull(),
 	subtitulo: text().notNull(),
 	conteudo: text().notNull(),
-	autorId: integer().notNull().references(() => user.id),
+	autorId: integer().notNull().references(() => usuario.id),
 	atualizadoEm: text().notNull().default(sql`(CURRENT_TIMESTAMP)`),
 	criadoEm: text().notNull().default(sql`(CURRENT_TIMESTAMP)`)
 });
@@ -30,11 +29,11 @@ export const artigo = sqliteTable('artigo', {
 export const comentario = sqliteTable('comentario', {
 	id: integer().primaryKey({ autoIncrement: true }),
 	artigoId: integer().notNull().references(() => artigo.id),
-	autorId: integer().notNull().references(() => user.id),
+	autorId: integer().notNull().references(() => usuario.id),
 	conteudo: text().notNull(),
 	criadoEm: text().notNull().default(sql`(CURRENT_TIMESTAMP)`)
 },
 	(table) => [
-		check("conteudo_constraint", sql`LENGTH(${table.conteudo}) BETWEEN 2 AND 512`)
+		check("restricao_conteudo", sql`LENGTH(${table.conteudo}) BETWEEN 2 AND 512`)
 	]
 );
