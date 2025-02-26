@@ -136,10 +136,10 @@ export async function authenticateUser(username, password) {
 	if (!validateUsername(username)) { throw new Error('Invalid username'); }
 	if (!validatePassword(password)) { throw new Error('Invalid password'); }
 
-	const existingUser = (await db.select().from(table.user).where(eq(table.user.username, username))).at(0);
+	const [existingUser] = await db.select().from(table.user).where(eq(table.user.username, username));
 	if (!existingUser) { throw new Error('Incorrect username or password'); }
 
-	const validPassword = await verify(existingUser.passwordHash, password, {
+	const validPassword = await verify(existingUser.passwordHash, password, { // recommended minimum parameters
 		memoryCost: 19456, timeCost: 2, outputLen: 32, parallelism: 1
 	});
 	if (!validPassword) { throw new Error('Incorrect username or password'); }
@@ -151,10 +151,17 @@ export async function registerUser(username, password) {
 	if (!validateUsername(username)) { throw new Error('Invalid username'); }
 	if (!validatePassword(password)) { throw new Error('Invalid password'); }
 
-	const passwordHash = await hash(password, {// recommended minimum parameters
+	const passwordHash = await hash(password, { // recommended minimum parameters
 		memoryCost: 19456, timeCost: 2, outputLen: 32, parallelism: 1
 	});
 
-	const newUser = (await db.insert(table.user).values({ username, passwordHash })).at(0);
+	const [newUser] = await db.insert(table.user).values({ username, passwordHash }).returning();
 	return newUser;
+}
+
+export async function updatePassword(userId, newPassword) {
+	const passwordHash = await hash(newPassword, { // recommended minimum parameters
+		memoryCost: 19456, timeCost: 2, outputLen: 32, parallelism: 1
+	});
+	await db.update(table.user).set({ passwordHash }).where(eq(table.user.id, userId));
 }

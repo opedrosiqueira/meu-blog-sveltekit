@@ -36,6 +36,6 @@ export const actions = {
 			return fail(400, { message: e.message });
 		}
 
-		return redirect(302, '/entrar');
+		return redirect(302, '/secreta');
 	}
 };
