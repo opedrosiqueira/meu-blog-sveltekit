@@ -12,7 +12,7 @@ export const load = async ({ params }) => {
     if (!artigo) error(404, { message: 'Not found' });
 
     const comentarios = await db.select({
-        id: table.comentario.id, conteudo: table.comentario.conteudo, criadoEm: table.comentario.criadoEm, autorId: table.comentario.autorId, autor: table.user.username
+        id: table.comentario.id, conteudo: table.comentario.conteudo, criadoEm: table.comentario.criadoEm, autorId: table.comentario.autorId, autor: table.user.username,autorImagem: table.user.image
     }).from(table.comentario).where(eq(table.comentario.artigoId, params.id)).innerJoin(table.user, eq(table.comentario.autorId, table.user.id)).orderBy(table.comentario.criadoEm, 'asc');
 
     return { artigo, comentarios };

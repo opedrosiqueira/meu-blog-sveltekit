@@ -11,24 +11,34 @@
 			<div class="card-body">
 				<form class="row g-3" method="post" enctype="multipart/form-data">
 					<div class="col-md-6">
-						<label for="nomeUsuario" class="form-label">Nome do usuário</label>
-						<input class="form-control" name="nomeUsuario" id="nomeUsuario" value={data.user.username} />
+						<label>
+							Nome do usuário
+							<input class="form-control" name="nomeUsuario" value={data.user.username} />
+						</label>
 					</div>
 					<div class="col-md-6">
-						<label for="senha" class="form-label">Senha atual</label>
-						<input type="password" class="form-control" name="senha" id="senha" required />
+						<label>
+							Senha atual
+							<input type="password" class="form-control" name="senha" required />
+						</label>
 					</div>
 					<div class="col-md-6">
-						<label for="senha1" class="form-label">Nova senha</label>
-						<input type="password" class="form-control" name="senha1" id="senha1" />
+						<label>
+							Nova senha
+							<input type="password" class="form-control" name="senha1" />
+						</label>
 					</div>
 					<div class="col-md-6">
-						<label for="senha2" class="form-label">Confirme a senha</label>
-						<input type="password" class="form-control" name="senha2" id="senha2" />
+						<label>
+							Confirme a senha
+							<input type="password" class="form-control" name="senha2" />
+						</label>
 					</div>
 					<div class="col-12">
-						<label for="fotoPerfil" class="form-label">Foto de perfil</label>
-						<input class="form-control" type="file" name="fotoPerfil" id="fotoPerfil" accept="image/*" />
+						<label>
+							Foto de perfil
+							<input class="form-control" type="file" name="imagem" accept="image/*" />
+						</label>
 					</div>
 					<div class="col-12">
 						<button class="btn btn-primary">Atualizar informações</button>
