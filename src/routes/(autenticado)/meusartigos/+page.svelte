@@ -1,32 +1,18 @@
 <script>
 	let { data, form } = $props();
-
 	let termo = $state('');
-	let filtrados = $state(data.artigos.slice());
-
-	function pesquisar() {
-		if (termo.trim() === '') {
-			filtrados = data.artigos.slice();
-			return;
-		} else {
-			filtrados = [];
-			for (const artigo of data.artigos) {
-				if (artigo.titulo.toLowerCase().includes(termo.toLowerCase())) {
-					filtrados.push(artigo);
-				}
-			}
-		}
-	}
+	let filtrados = $derived(termo.trim() ? data.artigos.filter((artigo) => artigo.titulo.toLowerCase().includes(termo.toLowerCase())) : data.artigos.slice());
 </script>
 
 <h1>Meus artigos</h1>
 
 <a href="/meusartigos/novo" class="btn btn-primary mb-3">Novo artigo</a>
 
-{#if data.artigos.length === 0}
+{#if data.artigos?.length === 0}
 	<p>Você ainda não escreveu nenhum artigo.</p>
 {:else}
-	<input class="form-control mb-3" type="text" bind:value={termo} oninput={pesquisar} placeholder="Pesquisar artigos" />
+	<input class="form-control mb-3" type="text" bind:value={termo} placeholder="Pesquisar artigos" />
+
 	{#if filtrados.length === 0}
 		<p>Nenhum artigo encontrado.</p>
 	{:else}

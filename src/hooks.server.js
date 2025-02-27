@@ -1,24 +1,16 @@
 import * as auth from '$lib/server/auth.js';
 
-/**
- * If a session token is present in the request cookies, validate it and set the user and session locals.
- * @param {import('@sveltejs/kit').RequestEvent} event
- * @param {Function} resolve
- * @returns {Promise<import('@sveltejs/kit').RequestEvent>}
- */
-const handleAuth = async ({ event, resolve }) => {
+/** Se um token de sessão estiver presente nos cookies da requisição, valide-o e defina o usuário e a sessão. */
+export const handle = async ({ event, resolve }) => {
 	const sessionToken = event.cookies.get(auth.sessionCookieName);
-	if (!sessionToken) {
+
+	if (sessionToken) {
+		const { session, user } = await auth.validateSessionToken(sessionToken, event.cookies);
+		event.locals.user = user;
+		event.locals.session = session;
+	} else {
 		event.locals.user = event.locals.session = null;
-		return resolve(event);
 	}
-
-	const { session, user } = await auth.validateSessionToken(sessionToken, event.cookies);
-
-	event.locals.user = user;
-	event.locals.session = session;
 
 	return resolve(event);
 };
-
-export const handle = handleAuth;

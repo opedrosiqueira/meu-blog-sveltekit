@@ -2,17 +2,18 @@
 	import { marked } from 'marked';
 
 	let { data, form } = $props();
+	let textarea = $state();
+	let comentario = $state('');
 
-	let textarea;
-
-	function redimensionar() {
-		textarea.style.height = 'auto';
-		textarea.style.height = textarea.scrollHeight + 'px';
-	}
+	$inspect(comentario).with(() => {
+		if (textarea) {
+			textarea.style.height = 'auto';
+			textarea.style.height = textarea.scrollHeight + 'px';
+		}
+	});
 
 	function limparComentario() {
-		textarea.value = '';
-		redimensionar();
+		comentario = '';
 	}
 </script>
 
@@ -21,9 +22,11 @@
 </svelte:head>
 
 <h1>{data.artigo.titulo}</h1>
+
 {#if data.artigo.autorId == data.user?.id}
 	<a href="/meusartigos/{data.artigo.id}" class="btn btn-primary">Editar</a>
 {/if}
+
 <p class="text-secondary">
 	<small>
 		Publicado em {data.artigo.criadoEm}, por {data.artigo.autor}.
@@ -32,6 +35,7 @@
 		{/if}
 	</small>
 </p>
+
 <p>{data.artigo.subtitulo}</p>
 
 <hr />
@@ -46,12 +50,13 @@
 	<form method="post" action="?/comentar">
 		<input type="hidden" name="artigoId" value={data.artigo.id} />
 		<input type="hidden" name="autorId" value={data.user.id} />
+
 		<div class="row mb-3">
 			<div class="col">
-				<textarea class="form-control" name="conteudo" placeholder="Adicione um comentário" minlength="2" maxlength="512" rows="1" bind:this={textarea} oninput={redimensionar}></textarea>
+				<textarea class="form-control" name="conteudo" placeholder="Adicione um comentário" minlength="2" maxlength="512" rows="1" bind:this={textarea} bind:value={comentario}></textarea>
 			</div>
 			<div class="col-auto">
-				<button type="submit" class="btn btn-primary">Comentar</button>
+				<button type="submit" class="btn btn-primary" disabled={!comentario.trim()}>Comentar</button>
 				<button type="button" class="btn border" onclick={limparComentario}>Cancelar</button>
 			</div>
 		</div>
@@ -67,8 +72,8 @@
 {#if data.comentarios?.length}
 	<div class="list-group list-group-flush">
 		{#each data.comentarios as comentario}
-			<div href="#" class="list-group-item list-group-item-action d-flex gap-3 pt-3" aria-current="true">
-				<img src="{comentario.autorImagem || 'https://github.com/twbs.png'}" alt={comentario.autor} width="32" height="32" class="rounded-circle flex-shrink-0" />
+			<div class="list-group-item list-group-item-action d-flex gap-3 pt-3">
+				<img src={comentario.autorImagem || 'https://github.com/twbs.png'} alt={comentario.autor} width="32" height="32" class="rounded-circle flex-shrink-0" />
 				<div class="d-flex gap-2 w-100 justify-content-between">
 					<div>
 						<h6 class="mb-0">{comentario.autor}</h6>

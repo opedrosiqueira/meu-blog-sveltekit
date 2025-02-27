@@ -2,21 +2,7 @@
 	let { data, form } = $props();
 
 	let termo = $state('');
-	let filtrados = $state(data.artigos.slice());
-
-	function pesquisar() {
-		if (termo.trim() === '') {
-			filtrados = data.artigos.slice();
-			return;
-		} else {
-			filtrados = [];
-			for (const artigo of data.artigos) {
-				if (artigo.titulo.toLowerCase().includes(termo.toLowerCase())) {
-					filtrados.push(artigo);
-				}
-			}
-		}
-	}
+	let filtrados = $derived(termo.trim() ? data.artigos.filter((artigo) => artigo.titulo.toLowerCase().includes(termo.toLowerCase())) : data.artigos.slice());
 </script>
 
 <!-- opção 1 para importar aquivo css -->
@@ -32,7 +18,8 @@
 
 <h1>Todos os artigos</h1>
 
-<input class="form-control mb-3" type="text" bind:value={termo} oninput={pesquisar} placeholder="Pesquisar artigos" />
+<input class="form-control mb-3" type="text" placeholder="Pesquisar artigos" bind:value={termo} />
+
 {#if filtrados.length === 0}
 	<p>Nenhum artigo encontrado.</p>
 {:else}

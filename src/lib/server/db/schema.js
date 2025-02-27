@@ -1,19 +1,19 @@
 import { sql } from 'drizzle-orm';
 import { sqliteTable, text, integer, check } from 'drizzle-orm/sqlite-core';
 
-export const usuario = sqliteTable('usuario', {
+export const user = sqliteTable('user', {
 	id: integer().primaryKey({ autoIncrement: true }),
-	nome: text().notNull().unique(),
-	imagem: text(),
-	hashSenha: text().notNull()
+	name: text().notNull().unique(),
+	image: text(),
+	passwordHash: text().notNull()
 });
 
-export const sessao = sqliteTable('sessao', {
+export const session = sqliteTable('session', {
 	id: text().primaryKey(),
-	usuarioId: integer()
+	userId: integer()
 		.notNull()
-		.references(() => usuario.id),
-	expiraEm: integer('expiraEm', { mode: 'timestamp' }).notNull()
+		.references(() => user.id),
+	expiresAt: integer('expiresAt', { mode: 'timestamp' }).notNull()
 });
 
 export const artigo = sqliteTable('artigo', {
@@ -21,7 +21,7 @@ export const artigo = sqliteTable('artigo', {
 	titulo: text().notNull(),
 	subtitulo: text().notNull(),
 	conteudo: text().notNull(),
-	autorId: integer().notNull().references(() => usuario.id),
+	autorId: integer().notNull().references(() => user.id),
 	atualizadoEm: text().notNull().default(sql`(CURRENT_TIMESTAMP)`),
 	criadoEm: text().notNull().default(sql`(CURRENT_TIMESTAMP)`)
 });
@@ -29,7 +29,7 @@ export const artigo = sqliteTable('artigo', {
 export const comentario = sqliteTable('comentario', {
 	id: integer().primaryKey({ autoIncrement: true }),
 	artigoId: integer().notNull().references(() => artigo.id),
-	autorId: integer().notNull().references(() => usuario.id),
+	autorId: integer().notNull().references(() => user.id),
 	conteudo: text().notNull(),
 	criadoEm: text().notNull().default(sql`(CURRENT_TIMESTAMP)`)
 },

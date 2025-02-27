@@ -45,7 +45,7 @@ export async function createSession(userId, cookies) {
 export async function validateSessionToken(token, cookies) {
 	const sessionId = hashToken(token);
 	const [result] = await db
-		.select({ user: { id: table.user.id, username: table.user.username, image: table.user.image }, session: table.session })
+		.select({ user: { id: table.user.id, name: table.user.name, image: table.user.image }, session: table.session })
 		.from(table.session)
 		.innerJoin(table.user, eq(table.session.userId, table.user.id))
 		.where(eq(table.session.id, sessionId));
@@ -101,7 +101,7 @@ function validatePassword(password) {
 export async function authenticateUser(username, password) {
 	if (!validateUsername(username) || !validatePassword(password)) throw new Error('Invalid username or password');
 
-	const [existingUser] = await db.select().from(table.user).where(eq(table.user.username, username));
+	const [existingUser] = await db.select().from(table.user).where(eq(table.user.name, username));
 	if (!existingUser) throw new Error('Incorrect username or password');
 
 	const validPassword = await verify(existingUser.passwordHash, password, { memoryCost: 19456, timeCost: 2, outputLen: 32, parallelism: 1 }); // recommended minimum parameters
@@ -115,7 +115,7 @@ export async function registerUser(username, password) {
 	if (!validateUsername(username) || !validatePassword(password)) throw new Error('Invalid username or password');
 
 	const passwordHash = await hash(password, { memoryCost: 19456, timeCost: 2, outputLen: 32, parallelism: 1 }); // recommended minimum parameters
-	const [newUser] = await db.insert(table.user).values({ username, passwordHash }).returning();
+	const [newUser] = await db.insert(table.user).values({ name: username, passwordHash }).returning();
 	return newUser;
 }
 

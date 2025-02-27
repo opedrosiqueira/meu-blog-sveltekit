@@ -9,10 +9,10 @@ export const db = drizzle(cliente);
 async function popularBanco() {
     console.log('Populando o banco de dados...');
 
-    await db.delete(tabela.usuario).where(eq(tabela.usuario.nome, 'usuarioTeste'));
+    await db.delete(tabela.user).where(eq(tabela.user.name, 'usuarioTeste'));
 
-    await db.insert(tabela.usuario).values([
-        { nome: 'usuarioTeste', hashSenha: 'senhaHash' }
+    await db.insert(tabela.user).values([
+        { name: 'usuarioTeste', passwordHash: 'senhaHash' }
     ]);
 
     console.log('Banco de dados populado com sucesso.');

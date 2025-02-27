@@ -13,7 +13,7 @@
 					<div class="col-md-6">
 						<label>
 							Nome do usuário
-							<input class="form-control" name="nomeUsuario" value={data.user.username} />
+							<input class="form-control" name="nomeUsuario" value={data.user.name} />
 						</label>
 					</div>
 					<div class="col-md-6">
@@ -43,7 +43,9 @@
 					<div class="col-12">
 						<button class="btn btn-primary">Atualizar informações</button>
 					</div>
-					<p style="color: red">{form?.message ?? ''}</p>
+					{#if form?.erro}
+						<p class="text-danger">{form.erro}</p>
+					{/if}
 				</form>
 			</div>
 		</div>

@@ -6,40 +6,45 @@ import { eq } from 'drizzle-orm';
 import fs from 'fs/promises';
 
 export const load = async (event) => {
-    const [user] = await db.select().from(table.user).where(eq(table.user.id, event.locals.user.id)).limit(1);
-    return { user };
+    return { user: event.locals.user };
 };
 
 export const actions = {
     default: async (event) => {
-        const formData = await event.request.formData();
-        const username = formData.get('nomeUsuario');
-        const password = formData.get('senha');
-        const senha1 = formData.get('senha1');
-        const senha2 = formData.get('senha2');
-        const imagem = formData.get('imagem');
+        const dadosFormulario = await event.request.formData();
+        const name = dadosFormulario.get('nomeUsuario');
+        const password = dadosFormulario.get('senha');
+        const novaSenha1 = dadosFormulario.get('senha1');
+        const novaSenha2 = dadosFormulario.get('senha2');
+        const imagem = dadosFormulario.get('imagem');
 
-        if (senha1 !== senha2) {
-            return fail(400, { message: 'As senhas não conferem' });
-        }
+        if (novaSenha1 !== novaSenha2) return fail(400, { erro: 'As senhas não conferem' });
 
         try {
-            await auth.authenticateUser(event.locals.user.username, password);
+            await auth.authenticateUser(event.locals.user.name, password);
 
-            if (senha1) await auth.updatePassword(event.locals.user.id, senha1);
+            if (novaSenha1) await auth.updatePassword(event.locals.user.id, novaSenha1);
 
-            if (username && username != event.locals.user.username) {
-                await db.update(table.user).set({ username }).where(eq(table.user.id, event.locals.user.id));
-                event.locals.user.username = username;
+            if (name && name !== event.locals.user.name) {
+                await db.update(table.user).set({ name }).where(eq(table.user.id, event.locals.user.id));
+                event.locals.user.name = name;
             }
 
             if (imagem && imagem.size) {
-                const image = `/banco/usuario/imagem/user-${event.locals.user.id}`;
-                await db.update(table.user).set({ image }).where(eq(table.user.id, event.locals.user.id));
-                await fs.writeFile('static' + image, Buffer.from(await imagem.arrayBuffer()));
+                const caminhoImagem = '/banco/user/image';
+                const nomeImagem = `user-${event.locals.user.id}`;
+
+                await db.update(table.user).set({ image: `${caminhoImagem}/${nomeImagem}` })
+                    .where(eq(table.user.id, event.locals.user.id));
+                event.locals.user.image = `${caminhoImagem}/${nomeImagem}`;
+
+                fs.mkdir('static' + caminhoImagem, { recursive: true })
+                    .then(() => imagem.arrayBuffer())
+                    .then((buffer) => fs.writeFile(`static/${caminhoImagem}/${nomeImagem}`, Buffer.from(buffer)))
+                    .catch((erro) => console.error('Erro ao salvar imagem:', erro));
             }
-        } catch (e) {
-            return fail(400, { message: e.message });
+        } catch (erro) {
+            return fail(400, { erro: erro.message });
         }
     }
 };

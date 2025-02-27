@@ -7,7 +7,7 @@
 		<aside>
 			<div class="offcanvas-lg offcanvas-start" tabindex="-1" id="mySideBar">
 				<div class="offcanvas-header border-bottom">
-					<h5 class="offcanvas-title">Browse docs</h5>
+					<h5 class="offcanvas-title">Menu</h5>
 					<button class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#mySideBar" aria-label="fecharSidebar"></button>
 				</div>
 				<div class="offcanvas-body">
