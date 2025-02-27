@@ -1,4 +1,6 @@
 <script>
+	// import '../style.css'; // opção 3 para importar arquivo css, mas o css deve estar na pasta routes. uma quarta opção seria criar um arquivo +layout para a página.
+
 	let { data, form } = $props();
 
 	let termo = $state('');
