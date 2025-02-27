@@ -3,7 +3,7 @@
 Execute:
 
 ```
-pnpm dlx sv create curso_sveltekit
+pnpm dlx sv create meu-blog-sveltekit
 ```
 
 Selecione as opções:
@@ -38,7 +38,7 @@ Selecione as opções:
 Execute:
 
 ```
-cd curso_sveltekit
+cd meu-blog-sveltekit
 pnpm run db:push
 ```
 
