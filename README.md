@@ -39,12 +39,12 @@ Execute:
 
 ```
 cd meu-blog-sveltekit
-pnpm run db:push
+pnpm db:push
 ```
 
 Selecione "Yes".
 
-Tudo pronto! Pode executar o site com `pnpm run dev` e acessar a página http://localhost:5173/ de exemplo!
+Tudo pronto! Pode executar o site com `pnpm dev` e acessar a página http://localhost:5173/ de exemplo!
 
 ## TODO-List
 
